@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Perplexity — Loading</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      background:#0A0A0F;
+      display:flex;align-items:center;justify-content:center;
+      height:100vh;font-family:system-ui,sans-serif;
+    }
+    .wrap{text-align:center}
+    .logo{font-size:64px;animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.92)}}
+    p{color:#636366;font-size:13px;margin-top:18px;letter-spacing:.04em}
+    .bar{width:180px;height:3px;background:#1a1a1a;border-radius:99px;margin:14px auto 0;overflow:hidden}
+    .fill{height:3px;background:linear-gradient(90deg,#20B79F,#6C63FF);border-radius:99px;animation:load 1.6s ease-in-out infinite}
+    @keyframes load{0%{width:0;margin-left:0}60%{width:100%;margin-left:0}100%{width:0;margin-left:100%}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">⚡</div>
+    <p>Starting backend…</p>
+    <div class="bar"><div class="fill"></div></div>
+  </div>
+</body>
+</html>

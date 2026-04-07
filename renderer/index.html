@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src http://127.0.0.1:3000"/>
+  <title>Perplexity — AI Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+
+  <div class="sidebar-header">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <div class="logo-text">
+        <span class="logo-name">Perplexity</span>
+        <span class="logo-version" id="appVersion">v2.0.0</span>
+      </div>
+    </div>
+    <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">‹</button>
+  </div>
+
+  <div class="status-pill" id="statusPill">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Connecting…</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sidebar-scroll">
+
+    <label class="setting-label"><span>🤖 Model</span></label>
+    <select class="select" id="modelSelect">
+      <option value="sonar-pro" selected>sonar-pro</option>
+    </select>
+
+    <label class="setting-label"><span>🔍 Search Mode</span></label>
+    <select class="select" id="searchModeSelect">
+      <option value="web">web</option>
+      <option value="academic">academic</option>
+      <option value="sec">sec</option>
+    </select>
+
+    <label class="setting-label"><span>🧠 Research Effort</span></label>
+    <select class="select" id="researchEffort">
+      <option value="low">low</option>
+      <option value="medium" selected>medium</option>
+      <option value="high">high</option>
+    </select>
+
+    <label class="setting-label">
+      <span>🌡️ Temperature</span>
+      <span class="setting-val" id="tempVal">0.7</span>
+    </label>
+    <input type="range" class="slider" id="tempSlider" min="0" max="2" step="0.1" value="0.7"/>
+
+    <label class="setting-label"><span>✂️ Max Tokens</span></label>
+    <input type="number" class="input-field" id="maxTokens" placeholder="Default (no limit)" min="1" max="4096"/>
+
+    <label class="setting-label"><span>📅 Recency Filter</span></label>
+    <select class="select" id="recencyFilter">
+      <option value="none" selected>none</option>
+      <option value="day">day</option>
+      <option value="week">week</option>
+      <option value="month">month</option>
+      <option value="year">year</option>
+    </select>
+
+    <div class="check-group">
+      <label class="check-item">
+        <input type="checkbox" id="chkImages"/>
+        <span class="check-box"></span>
+        <span>📷 Return Images</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="chkVideos"/>
+        <span class="check-box"></span>
+        <span>🎥 Return Videos</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="chkRelated"/>
+        <span class="check-box"></span>
+        <span>❓ Related Questions</span>
+      </label>
+      <label class="check-item">
+        <input type="checkbox" id="chkHistory"/>
+        <span class="check-box"></span>
+        <span>💬 Keep History</span>
+      </label>
+    </div>
+
+    <label class="setting-label"><span>⚙️ System Prompt</span></label>
+    <textarea class="textarea" id="systemPrompt" placeholder="Optional system instructions…" rows="3"></textarea>
+
+    <label class="setting-label"><span>🌐 Domain Filter</span></label>
+    <input type="text" class="input-field" id="domainFilter" placeholder="e.g. arxiv.org, nature.com"/>
+
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sidebar-actions">
+    <button class="action-btn" id="btnApiKey"><span>🔑 API Key</span></button>
+    <button class="action-btn" id="btnDocs"><span>📚 API Docs</span></button>
+    <button class="action-btn" id="btnExport"><span>💾 Export Chat</span></button>
+    <button class="action-btn danger" id="btnClearHistory"><span>🗑️ Clear History</span></button>
+  </div>
+
+</aside>
+
+<main class="main" id="main">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="current-model-badge" id="currentModelBadge">sonar-pro</span>
+    </div>
+    <div class="topbar-right">
+      <button class="icon-btn" id="btnNewChat" title="New conversation">
+        <span>✦ New Chat</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="chat-wrap" id="chatWrap">
+    <div class="welcome" id="welcomeScreen">
+      <div class="welcome-icon">⚡</div>
+      <h1 class="welcome-title">Ask anything</h1>
+      <p class="welcome-sub">AI-powered answers with cited sources</p>
+      <div class="suggestion-chips">
+        <button class="chip" data-q="What are the latest AI breakthroughs in 2026?">🤖 AI breakthroughs 2026</button>
+        <button class="chip" data-q="Explain quantum computing simply">⚛️ Quantum computing</button>
+        <button class="chip" data-q="What is the current state of fusion energy?">🔥 Fusion energy</button>
+        <button class="chip" data-q="Top programming languages to learn in 2026">💻 Top languages 2026</button>
+      </div>
+    </div>
+
+    <div class="messages" id="messages"></div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-box" id="inputBox">
+      <textarea
+        class="chat-input"
+        id="chatInput"
+        placeholder="Ask anything… (Enter to send, Shift+Enter for newline)"
+        rows="1"
+      ></textarea>
+      <button class="send-btn" id="sendBtn" title="Send message">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+          <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <p class="input-hint">
+      Enter to send · Shift+Enter for new line · v<span id="versionHint">2.0.0</span>
+    </p>
+  </div>
+
+</main>
+
+<div class="modal-overlay" id="apiKeyModal">
+  <div class="modal">
+    <div class="modal-icon">🔐</div>
+    <h2 class="modal-title">Connect API Key</h2>
+    <p class="modal-sub">Encrypted with your machine ID and stored locally</p>
+    <input type="password" class="modal-input" id="apiKeyInput" placeholder="pplx-xxxxxxxxxxxxxxxxxxxxxxxx"/>
+    <div class="modal-actions">
+      <button class="modal-btn primary" id="apiKeySave">Save Key</button>
+      <button class="modal-btn ghost" id="apiKeyCancel">Cancel</button>
+    </div>
+    <button class="modal-danger" id="apiKeyDelete">Remove saved key</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="docsModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2 class="modal-title">📚 API Docs</h2>
+      <button class="close-btn" id="docsClose">✕</button>
+    </div>
+    <div class="docs-body" id="docsBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "name": "perplexity-gui",
+  "version": "2.0.0",
+  "description": "Perplexity API — Premium Electron GUI",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "install-python": "pip install -r backend/requirements.txt"
+  },
+  "dependencies": {
+    "marked": "^12.0.0"
+  },
+  "devDependencies": {
+    "electron": "^30.5.1"
+  },
+  "author": "PDraganov07",
+  "license": "MIT"
+}
